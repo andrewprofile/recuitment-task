@@ -32,5 +32,10 @@
         "test": "vendor/bin/phpunit",
         "code-coverage": "vendor/bin/phpunit --coverage-html reports",
         "static-analyze": "php ./vendor/bin/phpstan analyse -l 9 src tests && php ./vendor/bin/psalm.phar --config=psalm.xml.dist --show-info=true src && php ./vendor/bin/phpcs"
+    },
+    "config": {
+        "platform": {
+            "php": "8.3"
+        }
     }
 }
