@@ -2,29 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PragmaGoTech\Interview\Model;
+namespace PragmaGoTech\Interview\Fee\Model;
 
 /**
  * A cut down version of a loan application containing
  * only the required properties for this test.
  */
-class LoanProposal
+final readonly class Loan
 {
-    private int $term;
-
-    private float $amount;
-
-    public function __construct(int $term, float $amount)
-    {
-        $this->term = $term;
-        $this->amount = $amount;
-    }
+    public function __construct(private Term $term, private Amount $amount) {}
 
     /**
      * Term (loan duration) for this loan application
      * in number of months.
      */
-    public function term(): int
+    public function term(): Term
     {
         return $this->term;
     }
@@ -32,7 +24,7 @@ class LoanProposal
     /**
      * Amount requested for this loan application.
      */
-    public function amount(): float
+    public function amount(): Amount
     {
         return $this->amount;
     }

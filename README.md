@@ -39,12 +39,29 @@ composer install
 ```php
 <?php
 
-use PragmaGoTech\Interview\Model\LoanProposal;
+use PragmaGoTech\Interview\Fee\AccurateFeeCalculator;
+use PragmaGoTech\Interview\Fee\CsvFileLoader;
+use PragmaGoTech\Interview\Fee\FeeCalculatorFacade;
+use PragmaGoTech\Interview\Fee\LinearInterpolatedFeeCalculator;
+use PragmaGoTech\Interview\Fee\Model\BreakpointsCollection;
 
-$calculator = new FeeCalculator();
-
-$application = new LoanProposal(24, 2750);
-$fee = $calculator->calculate($application);
+$resourcesDir = __DIR__ . DIRECTORY_SEPARATOR . 'resources';
+$breakpointsCollection = new BreakpointsCollection();
+$breakpointsCollection->loadFromCsv(
+    12,
+    (new CsvFileLoader($resourcesDir . DIRECTORY_SEPARATOR . '12.csv'))
+);
+$breakpointsCollection->loadFromCsv(
+    24,
+    (new CsvFileLoader($resourcesDir . DIRECTORY_SEPARATOR . '24.csv'))
+);
+$accurateFeeCalculator = new AccurateFeeCalculator($breakpointsCollection);
+$linearInterpolatedFeeCalculator = new LinearInterpolatedFeeCalculator($breakpointsCollection);
+$facade = new FeeCalculatorFacade(
+    $accurateFeeCalculator,
+    $linearInterpolatedFeeCalculator,
+);
+$fee = $facade->calculate(24, 2750);
 // $fee = (float) 115.0
 ```
 

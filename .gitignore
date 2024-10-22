@@ -1,0 +1,6 @@
+reports/
+vendor/
+composer.lock
+.phpunit.result.cache
+qodana.yaml
+config.xsd
