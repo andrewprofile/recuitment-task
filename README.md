@@ -116,3 +116,23 @@ The fee structure doesn't follow particular algorithm and it is possible that sa
 19000 PLN: 760 PLN
 20000 PLN: 800 PLN
 ```
+
+# Useful commands
+
+Run the following command to run the test suite. 
+
+```bash
+composer test
+```
+
+Run the following command to run the coverage code.
+
+```bash
+composer code-coverage
+```
+
+Run the following command to run the static analysis code.
+
+```bash
+composer static-analyze
+```
