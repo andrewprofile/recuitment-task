@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fee;
 
+use Money\Money;
 use PragmaGoTech\Interview\Fee\Model\Breakpoints;
 use PragmaGoTech\Interview\Fee\Model\Collection;
 use PragmaGoTech\Interview\Fee\Model\Exception\InvalidArgumentException;
@@ -14,7 +15,7 @@ final readonly class AccurateFeeCalculator implements FeeCalculator
 {
     public function __construct(private Collection $breakpoints) {}
 
-    public function accurateFee(object $breakpoints, float $amount): float
+    public function accurateFee(object $breakpoints, Money $amount): Money
     {
         // @codeCoverageIgnoreStart
         if (!($breakpoints instanceof Breakpoints)) {
@@ -22,14 +23,14 @@ final readonly class AccurateFeeCalculator implements FeeCalculator
         }
         // @codeCoverageIgnoreEnd
 
-        return $breakpoints->fee($amount) ?? Fee::CONTINUE_PROPAGATION;
+        return $breakpoints->fee($amount) ?? Money::PLN(Fee::CONTINUE_PROPAGATION);
     }
-    public function calculate(Loan $loan): float
+    public function calculate(Loan $loan): string
     {
         $term = $loan->term()->term();
         $breakpoints = $this->breakpoints->loadByTerm($term);
+        $amount = $loan->amount();
 
-        $amount = $loan->amount()->amount();
-        return $this->accurateFee($breakpoints, $amount);
+        return $this->accurateFee($breakpoints, $amount)->getAmount();
     }
 }

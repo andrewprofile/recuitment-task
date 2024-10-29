@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Unit\Fee;
 
+use Money\Money;
 use PragmaGoTech\Interview\Fee\AccurateFeeCalculator;
 use PHPUnit\Framework\TestCase;
 use PragmaGoTech\Interview\Fee\FeeCalculator;
-use PragmaGoTech\Interview\Fee\Model\Amount;
 use PragmaGoTech\Interview\Fee\Model\Exception\InvalidArgumentException;
 use PragmaGoTech\Interview\Fee\Model\Loan;
 use PragmaGoTech\Interview\Fee\Model\BreakpointsCollection;
@@ -21,7 +21,7 @@ final class AccurateFeeCalculatorTest extends TestCase
     {
         $breakpointsCollection = new BreakpointsCollection([
             24 => [
-                [1000.00, 70.00],
+                [1000, 70],
             ],
         ]);
         $this->feeCalculator = new AccurateFeeCalculator($breakpointsCollection);
@@ -30,7 +30,7 @@ final class AccurateFeeCalculatorTest extends TestCase
     public function testCalculateTotalFeeWithExactValues(): void
     {
         $term = new Term(24);
-        $amount = new Amount(1000.00);
+        $amount = Money::PLN(1000);
         $loan = new Loan($term, $amount);
 
         $result = $this->feeCalculator->calculate($loan);
@@ -41,7 +41,7 @@ final class AccurateFeeCalculatorTest extends TestCase
     public function testCalculateThrowsExceptionWhenNoTermDefined(): void
     {
         $term = new Term(12);
-        $amount = new Amount(1000.00);
+        $amount = Money::PLN(1000);
         $loan = new Loan($term, $amount);
 
         $this->expectException(InvalidArgumentException::class);
@@ -52,7 +52,7 @@ final class AccurateFeeCalculatorTest extends TestCase
     public function testCalculateTotalFeeWithNotExactValues(): void
     {
         $term = new Term(24);
-        $amount = new Amount(1005.00);
+        $amount = Money::PLN(1005);
         $loan = new Loan($term, $amount);
 
         $result = $this->feeCalculator->calculate($loan);

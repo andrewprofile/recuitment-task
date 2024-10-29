@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fee\Model;
 
+use Money\Money;
 use PragmaGoTech\Interview\Fee\CsvFileLoader;
 use PragmaGoTech\Interview\Fee\Model\Exception\InvalidArgumentException;
 
@@ -63,8 +64,8 @@ class BreakpointsCollection implements Collection
 
         foreach ($breakpoints as $breakpoint) {
             $collection[] = new Breakpoint(
-                new Amount((float)$breakpoint[self::AMOUNT_COLUMN]),
-                new Fee((float)$breakpoint[self::FEE_COLUMN])
+                Money::PLN((int)$breakpoint[self::AMOUNT_COLUMN]),
+                Money::PLN((int)$breakpoint[self::FEE_COLUMN])
             );
         }
 

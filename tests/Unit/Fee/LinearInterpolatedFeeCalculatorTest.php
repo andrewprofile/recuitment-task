@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Unit\Fee;
 
+use Money\Money;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PragmaGoTech\Interview\Fee\FeeCalculator;
 use PragmaGoTech\Interview\Fee\LinearInterpolatedFeeCalculator;
 use PHPUnit\Framework\TestCase;
-use PragmaGoTech\Interview\Fee\Model\Amount;
 use PragmaGoTech\Interview\Fee\Model\BreakpointsCollection;
 use PragmaGoTech\Interview\Fee\Model\Loan;
 use PragmaGoTech\Interview\Fee\Model\Term;
@@ -21,11 +21,11 @@ final class LinearInterpolatedFeeCalculatorTest extends TestCase
     {
         $breakpointsCollection = new BreakpointsCollection([
             24 => [
-                [1000.00, 70.00],
-                [2000.00, 100.00],
-                [3000.00, 120.00],
-                [11000.00, 440.00],
-                [12000.00, 480.00],
+                [1000, 70],
+                [2000, 100],
+                [3000, 120],
+                [11000, 440],
+                [12000, 480],
             ],
         ]);
         $this->feeCalculator = new LinearInterpolatedFeeCalculator($breakpointsCollection);
@@ -33,15 +33,15 @@ final class LinearInterpolatedFeeCalculatorTest extends TestCase
 
     public static function dataProvider(): \Generator
     {
-        yield [24, 11500.00, 460.00];
-        yield [24, 2750.00, 115.00];
+        yield [24, 11500, 440];
+        yield [24, 2750, 120];
     }
 
     #[DataProvider('dataProvider')]
-    public function testCalculateTotalFeeWithInterpolatedValues(int $term, float $amount, float $fee): void
+    public function testCalculateTotalFeeWithInterpolatedValues(int $term, int $amount, int $fee): void
     {
         $term = new Term($term);
-        $amount = new Amount($amount);
+        $amount = Money::PLN($amount);
         $loan = new Loan($term, $amount);
 
         $result = $this->feeCalculator->calculate($loan);
@@ -52,11 +52,11 @@ final class LinearInterpolatedFeeCalculatorTest extends TestCase
     public function testCalculateTotalFeeAdjustsToNearestFive(): void
     {
         $term = new Term(24);
-        $amount = new Amount(2755.00);
+        $amount = Money::PLN(2755);
         $loan = new Loan($term, $amount);
 
         $result = $this->feeCalculator->calculate($loan);
 
-        $this->assertEquals(120.00, $result);
+        $this->assertEquals(120, $result);
     }
 }

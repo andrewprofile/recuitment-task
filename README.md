@@ -120,7 +120,7 @@ The fee structure doesn't follow particular algorithm and it is possible that sa
 # In Production
 
 Working with financial data is a serious matter, and small rounding mistakes in an application may lead to serious consequences in real life. That's why floating-point arithmetic is not suited for monetary calculations. 
-However, for the purpose of this example I do not use external libraries, because as I understood it is to show the general concepts of programming and not how I am able to use libraries, so in a production environment it would be advisable to use for example the library `moneyphp/money`
+Use the library `moneyphp/money` for data representation.
 
 # Useful commands
 
