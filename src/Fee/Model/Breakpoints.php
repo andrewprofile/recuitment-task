@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fee\Model;
 
+use Money\Money;
 use PragmaGoTech\Interview\Fee\Model\Exception\InvalidArgumentException;
 
 /**
@@ -19,12 +20,12 @@ final class Breakpoints extends \ArrayObject
         parent::__construct($breakpoints);
     }
 
-    public function lowerBoundAmount(float $amount): float
+    public function lowerBoundAmount(Money $amount): Money
     {
         $amounts = [];
 
         array_walk($this->breakpoints, static function (Breakpoint $breakpoint) use ($amount, &$amounts) {
-            if ($breakpoint->amount() < $amount) {
+            if ($breakpoint->amount()->lessThan($amount)) {
                 $amounts[] = $breakpoint->amount();
             }
         });
@@ -32,12 +33,12 @@ final class Breakpoints extends \ArrayObject
         return !empty($amounts) ? max($amounts) : throw InvalidArgumentException::amountOutOfRange();
     }
 
-    public function upperBoundAmount(float $amount): float
+    public function upperBoundAmount(Money $amount): Money
     {
         $amounts = [];
 
         array_walk($this->breakpoints, static function (Breakpoint $breakpoint) use ($amount, &$amounts) {
-            if ($breakpoint->amount() > $amount) {
+            if ($breakpoint->amount()->greaterThan($amount)) {
                 $amounts[] = $breakpoint->amount();
             }
         });
@@ -45,21 +46,21 @@ final class Breakpoints extends \ArrayObject
         return !empty($amounts) ? min($amounts) : throw InvalidArgumentException::amountOutOfRange();
     }
 
-    public function lowerFee(float $amount): float
+    public function lowerFee(Money $amount): Money
     {
         return $this->fee($amount) ?? throw InvalidArgumentException::feeIsInvalid();
     }
 
-    public function upperFee(float $amount): float
+    public function upperFee(Money $amount): Money
     {
         return $this->fee($amount) ?? throw InvalidArgumentException::feeIsInvalid();
     }
 
-    public function fee(float $amount): ?float
+    public function fee(Money $amount): ?Money
     {
         $fee = null;
         array_walk($this->breakpoints, static function (Breakpoint $breakpoint) use ($amount, &$fee) {
-            if ($breakpoint->amount() === $amount) {
+            if ($breakpoint->amount()->equals($amount)) {
                 $fee = $breakpoint->fee();
             }
         });

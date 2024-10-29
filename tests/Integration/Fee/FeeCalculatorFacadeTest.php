@@ -41,13 +41,13 @@ class FeeCalculatorFacadeTest extends TestCase
 
     public static function dataProvider(): \Generator
     {
-        yield [24, 2750.00, 115.00];
-        yield [24, 11500.00, 460.00];
-        yield [12, 19250.00, 385.00];
+        yield [24, 2750, 120];
+        yield [24, 11500, 440];
+        yield [12, 19250, 380];
     }
 
     #[DataProvider('dataProvider')]
-    public function testCalculateReturnsExpectedFee(int $term, float $amount, float $fee): void
+    public function testCalculateReturnsExpectedFee(int $term, int $amount, int $fee): void
     {
         $this->assertEquals($fee, $this->feeCalculatorFacade->calculate($term, $amount));
     }
@@ -55,7 +55,7 @@ class FeeCalculatorFacadeTest extends TestCase
     public function testCalculateThrowsExceptionWhenNoFeeIsCalculated(): void
     {
         $term = 13;
-        $amount = 1000.0;
+        $amount = 1000;
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The loan terms should be defined.');

@@ -16,9 +16,9 @@ final readonly class FeeCalculatorCollector
     public function __construct(private array $feeCalculators) {}
 
     /**
-     * @return float The calculated total fee.
+     * @return string The calculated total fee.
      */
-    public function calculate(Loan $loan): float
+    public function calculate(Loan $loan): string
     {
         $fee = Fee::CONTINUE_PROPAGATION;
 
@@ -29,11 +29,11 @@ final readonly class FeeCalculatorCollector
         foreach ($this->feeCalculators as $feeCalculator) {
             $fee = $feeCalculator->calculate($loan);
 
-            if ($fee > 0.00) {
+            if ($fee > 0) {
                 break;
             }
         }
 
-        return $fee > 0.0 ? $fee : throw InvalidArgumentException::feeIsInvalid();
+        return $fee > 0 ? $fee : throw InvalidArgumentException::feeIsInvalid();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fee;
 
-use PragmaGoTech\Interview\Fee\Model\Amount;
+use Money\Money;
 use PragmaGoTech\Interview\Fee\Model\Loan;
 use PragmaGoTech\Interview\Fee\Model\Term;
 
@@ -22,11 +22,11 @@ final readonly class FeeCalculatorFacade
         ]);
     }
 
-    public function calculate(int $term, float $amount): float
+    public function calculate(int $term, int $amount): string
     {
         return $this->collector->calculate(new Loan(
             new Term($term),
-            new Amount($amount)
+            Money::PLN($amount)
         ));
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fee;
 
+use Money\Money;
 use PragmaGoTech\Interview\Fee\Model\Breakpoints;
 use PragmaGoTech\Interview\Fee\Model\Collection;
 use PragmaGoTech\Interview\Fee\Model\Exception\InvalidArgumentException;
@@ -13,28 +14,16 @@ final readonly class LinearInterpolatedFeeCalculator implements FeeCalculator
 {
     public function __construct(private Collection $breakpoints) {}
 
-    public function calculate(Loan $loan): float
+    public function calculate(Loan $loan): string
     {
         $term = $loan->term()->term();
         $breakpoints = $this->breakpoints->loadByTerm($term);
 
-        $amount = $loan->amount()->amount();
-        $interpolatedFee = $this->interpolatedFee($breakpoints, $amount);
-
-        return $this->adjustFee($amount, $interpolatedFee);
+        $amount = $loan->amount();
+        return $this->interpolatedFee($breakpoints, $amount)->getAmount();
     }
 
-    private function adjustFee(float $amount, float $fee): float
-    {
-        $total = $amount + $fee;
-        if ($total % 5 !== 0) {
-            $fee += (5 - ($total % 5));
-        }
-
-        return round($fee, 2);
-    }
-
-    private function interpolatedFee(object $breakpoints, float $amount): float
+    private function interpolatedFee(object $breakpoints, Money $amount): Money
     {
         // @codeCoverageIgnoreStart
         if (!($breakpoints instanceof Breakpoints)) {
@@ -47,9 +36,14 @@ final readonly class LinearInterpolatedFeeCalculator implements FeeCalculator
         $lowerFee = $breakpoints->lowerFee($lowerBound);
         $upperFee = $breakpoints->upperFee($upperBound);
 
-        $interpolatedFee = $lowerFee + (($amount - $lowerBound) /
-                ($upperBound - $lowerBound)) * ($upperFee - $lowerFee);
+        $amountStep = $upperBound->subtract($lowerBound);  // ($upperBound - $lowerBound)
+        $feeStep = $upperFee->subtract($lowerFee); // ($upperFee - $lowerFee)
+        $amountDelta = $amount->subtract($lowerBound); // ($amount - $lowerBound)
 
-        return ceil($interpolatedFee);
+        // (($amount - $lowerBound) / ($upperBound - $lowerBound))
+        $coefficient = $amountDelta->divide($amountStep->getAmount(), Money::ROUND_HALF_EVEN);
+        $feeDelta = $feeStep->multiply($coefficient->getAmount(), Money::ROUND_HALF_EVEN);
+
+        return $lowerFee->add($feeDelta);
     }
 }

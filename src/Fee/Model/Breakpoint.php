@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fee\Model;
 
+use Money\Money;
+
 final readonly class Breakpoint
 {
-    public function __construct(private Amount $amount, private Fee $fee) {}
+    public function __construct(private Money $amount, private Money $fee) {}
 
-    public function amount(): float
+    public function amount(): Money
     {
-        return $this->amount->amount();
+        return $this->amount;
     }
 
-    public function fee(): float
+    public function fee(): Money
     {
-        return $this->fee->fee();
+        return $this->fee;
     }
 }

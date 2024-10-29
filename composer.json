@@ -11,6 +11,9 @@
             "email": "andkos11@gmail.com"
         }
     ],
+    "require": {
+        "moneyphp/money": "^4.5"
+    },
     "require-dev": {
         "phpunit/phpunit": "11",
         "psalm/phar": "^5.26",

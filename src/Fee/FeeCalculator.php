@@ -8,5 +8,5 @@ use PragmaGoTech\Interview\Fee\Model\Loan;
 
 interface FeeCalculator
 {
-    public function calculate(Loan $loan): float;
+    public function calculate(Loan $loan): string;
 }
