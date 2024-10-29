@@ -62,7 +62,7 @@ $facade = new FeeCalculatorFacade(
     $linearInterpolatedFeeCalculator,
 );
 $fee = $facade->calculate(24, 2750);
-// $fee = (float) 115.0
+// $fee = 120
 ```
 
 # Fee Structure
